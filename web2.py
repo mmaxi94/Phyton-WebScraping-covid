@@ -93,9 +93,12 @@ for i in range(3, len(rows) - 1):
 
 # Se exporta el dataframe resultante en un archivo con formato csv.
 # Se declara index=False para que no se incluya el numero de indice de linea
+
+ruta = 'F:\Phyton_programas\PyCharm\WebScrapping_Covid-19_Argentina_daily.csv'
+
 try:
-    df.to_csv(r'F:\Phyton_programas\PyCharm\WebScrapping_' + 'Covid-19_Argentina_daily.csv', index=False)
+    df.to_csv(ruta, index=False)
 except PermissionError:
     print("[Errno 13] Permission denied: Revisa que hayas cerrado correctamente el archivo csv antes de ejecutar el programa.")
-finally:
+else:
     print("archivo csv generado correctamente.")
