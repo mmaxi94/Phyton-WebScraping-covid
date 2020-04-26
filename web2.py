@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import csv
 import pandas as pd
+import os
 
 # funciones de data cleaning:
 
@@ -53,8 +54,9 @@ columns0 = [v.text.replace('\n', '') for v in rows[0].find_all('th')]  # row[0] 
 columns1 = [v.attrs['title'] for v in rows[1].find_all('abbr')[:-1]]  # aca tengo una lista con BA (C) hasta New
 columns2 = [v.attrs['title'] for v in rows[2].find_all('abbr')]  # ['Total', 'D', 'NC', 'ND']
 
-# Se añade al encabezado general de la tabla, la columna 'Date' en la lista llamada 'header'
-header = [columns0[0]]
+# Se añade al encabezado general de la tabla, la columna 'ID' y 'Date' en la lista llamada 'header'
+header = ['ID']
+header.append(columns0[0])
 
 # proceso de construccion del encabezado
 for e in columns1:
@@ -65,6 +67,9 @@ for e in columns2:
 
 # Se construye un dataframe bidimensional solamente con el header
 df = pd.DataFrame(columns=header)
+
+#inicializo indice autoincremental para la columna ID
+index=0
 
 # Interesa almacenar estadisticas de la tabla a partir de la 4° fila hasta la última, exceptuando las notas al pie de tabla
 for i in range(3, len(rows) - 1):
@@ -77,7 +82,7 @@ for i in range(3, len(rows) - 1):
 
     # La lista values realiza la construccion de cada registro de la tabla según el orden del header.
     values = []
-
+    values.append(index)
     # se añaden los elementos al registro, comenzando por la fecha y luego las estadisticas de infectados/muertos
     values.append(limpiar_dato(aux))
 
@@ -89,15 +94,15 @@ for i in range(3, len(rows) - 1):
         # Se crea una serie cuyo valor es el registro entero y el indice son todos los campos del header
         # La serie creada se añade al dataframe inicialmente vacio, ignorando el indice para que sea consecutivo
         df = df.append(pd.Series(values, index=header), ignore_index=True)
-
+    index=index+1
 
 # Se exporta el dataframe resultante en un archivo con formato csv.
 # Se declara index=False para que no se incluya el numero de indice de linea
 
-ruta = 'F:\Phyton_programas\PyCharm\WebScrapping_Covid-19_Argentina_daily.csv'
-
+#ruta = 'F:\Phyton_programas\PyCharm\WebScrapping_Covid-19_Argentina_daily.csv'
+path = os.getcwd()+'\\'+'WebScrapping_Covid-19_Argentina_daily.csv'
 try:
-    df.to_csv(ruta, index=False)
+    df.to_csv(path, index=False)
 except PermissionError:
     print("[Errno 13] Permission denied: Revisa que hayas cerrado correctamente el archivo csv antes de ejecutar el programa.")
 else:
