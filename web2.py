@@ -65,6 +65,8 @@ for e in columns1:
 for e in columns2:
     header.append(e)
 
+
+
 # Se construye un dataframe bidimensional solamente con el header
 df = pd.DataFrame(columns=header)
 
@@ -83,14 +85,15 @@ for i in range(3, len(rows) - 1):
     # La lista values realiza la construccion de cada registro de la tabla según el orden del header.
     values = []
     values.append(index)
+
     # se añaden los elementos al registro, comenzando por la fecha y luego las estadisticas de infectados/muertos
     values.append(limpiar_dato(aux))
-
+    #print(values)
     for td in tds:
-        values.append(limpiar_dato(td.text.replace('\n', '').replace('—', '').replace(' ', '')))
+            values.append(limpiar_dato(td.text.replace('\n', '').replace('—', '').replace(' ', '')))
 
     # Si el registro contiene algun valor para cualquiera de sus campos se añade al Dataframe
-    if len(values) != 0:
+    if len(values) == 30:
         # Se crea una serie cuyo valor es el registro entero y el indice son todos los campos del header
         # La serie creada se añade al dataframe inicialmente vacio, ignorando el indice para que sea consecutivo
         df = df.append(pd.Series(values, index=header), ignore_index=True)
